@@ -1,44 +1,50 @@
+
 pipeline {
-    agent { label 'Jenkins-Agent' }
+    agent {
+        label 'Jenkins-Agent'
+    }
+
     tools {
         jdk 'Java21'
         maven 'Maven3'
     }
-    stages{
-        stage("Cleanup Workspace"){
-                steps {
-                cleanWs()
-                }
-        }
 
-        stage("Checkout from SCM"){
-                steps {
-                    git branch: 'main', credentialsId: 'github', url: 'https://github.com/Sharatheralagi007/register-app.git'
-                }
-        }
+    stages {
 
-        stage("Build Application"){
+        stage('Cleanup Workspace') {
             steps {
-                sh "mvn clean package"
+                cleanWs()
             }
+        }
 
-       }
+        stage('Checkout from SCM') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'github',
+                    url: 'https://github.com/Sharatheralagi007/register-app.git'
+            }
+        }
 
-       stage("Test Application"){
-           steps {
-                 sh "mvn test"
-           }
-       }
+        stage('Build Application') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
 
-        stage("SonarQube Analysis") {
-            step {
+        stage('Test Application') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
                 script {
                     withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
-                        sh "mvn sonar:sonar"
+                        sh 'mvn sonar:sonar'
                     }
                 }
             }
         }
-
     }
 }
