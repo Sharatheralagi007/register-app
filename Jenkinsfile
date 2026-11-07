@@ -100,9 +100,4 @@ pipeline {
             }
        }
     }
-    post {
-        always {
-            sh 'docker container prune -f || true'
-        }
-    }
 }
